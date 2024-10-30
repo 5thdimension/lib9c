@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Linq;
 using Bencodex.Types;
 using Libplanet.Action;
@@ -77,10 +76,7 @@ namespace Nekoyume.Action
                 );
             }
 
-            var claimedGiftIdsAddress = ClaimedGiftIdsAddress(AvatarAddress);
-            var claimedGiftIds = states.TryGetLegacyState(claimedGiftIdsAddress, out List rawIds)
-                ? rawIds.ToList(StateExtensions.ToInteger)
-                : new List<int>();
+            var claimedGiftIds = states.GetClaimedGifts(AvatarAddress);
             if (claimedGiftIds.Contains(giftRow.Id))
             {
                 throw new AlreadyClaimedGiftsException(
@@ -108,8 +104,7 @@ namespace Nekoyume.Action
             claimedGiftIds.Add(giftRow.Id);
 
             return states
-                .SetLegacyState(claimedGiftIdsAddress, claimedGiftIds.Aggregate(List.Empty,
-                    (current, giftId) => current.Add(giftId.Serialize())))
+                .SetClaimedGifts(AvatarAddress, claimedGiftIds)
                 .SetAvatarState(AvatarAddress, avatarState, setWorldInformation: false, setQuestList: false);
         }
     }
