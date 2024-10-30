@@ -33,6 +33,11 @@ namespace Nekoyume.TableData
                     Items.Add((materialId, quantity));
                 }
             }
+
+            public bool Validate(long blockIndex)
+            {
+                return StartedBlockIndex <= blockIndex && blockIndex <= EndedBlockIndex;
+            }
         }
 
         public ClaimableGiftsSheet() : base(nameof(ClaimableGiftsSheet))

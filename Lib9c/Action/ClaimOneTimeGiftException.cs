@@ -20,17 +20,17 @@ namespace Nekoyume.Action
     }
 
     [Serializable]
-    public class ClaimableGiftsDoesNotExistException : Exception
+    public class ClaimableGiftsNotAvailableException : Exception
     {
-        public ClaimableGiftsDoesNotExistException()
+        public ClaimableGiftsNotAvailableException()
         {
         }
 
-        public ClaimableGiftsDoesNotExistException(string msg) : base(msg)
+        public ClaimableGiftsNotAvailableException(string msg) : base(msg)
         {
         }
 
-        public ClaimableGiftsDoesNotExistException(SerializationInfo info, StreamingContext context) : base(info, context)
+        public ClaimableGiftsNotAvailableException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

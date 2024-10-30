@@ -19,13 +19,15 @@ namespace Nekoyume.Action
         private const string ActionTypeText = "claim_gifts";
 
         public Address AvatarAddress;
+        public int GiftId;
 
         public static Address ClaimedGiftIdsAddress(Address avatarAddress) =>
             avatarAddress.Derive("claimed_gift_ids");
 
-        public ClaimGifts(Address avatarAddress)
+        public ClaimGifts(Address avatarAddress, int giftId)
         {
             AvatarAddress = avatarAddress;
+            GiftId = giftId;
         }
 
         public ClaimGifts()
@@ -69,10 +71,18 @@ namespace Nekoyume.Action
                 sheetTypes: sheetTypes);
 
             var claimableGiftsSheet = sheets.GetSheet<ClaimableGiftsSheet>();
-            if (!claimableGiftsSheet.TryFindRowByBlockIndex(context.BlockIndex, out var giftRow))
+            if (!claimableGiftsSheet.TryGetValue(GiftId, out var giftRow))
             {
-                throw new ClaimableGiftsDoesNotExistException(
-                    $"[{addressesHex}] Claimable gift does not exist at block index: {context.BlockIndex}"
+                throw new SheetRowNotFoundException(
+                    addressesHex,
+                    nameof(claimableGiftsSheet),
+                    GiftId);
+            }
+
+            if (giftRow.Validate(context.BlockIndex))
+            {
+                throw new ClaimableGiftsNotAvailableException(
+                    $"[{addressesHex}] Claimable gift is not available at block index: {context.BlockIndex}"
                 );
             }
 
