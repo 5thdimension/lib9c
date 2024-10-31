@@ -384,8 +384,12 @@ namespace Nekoyume.Action
             var guildAddress = repository.GetJoinedGuild(ctx.GetAgentAddress());
             if (requiredNcg > 0 && guildAddress is not null)
             {
-                states = states.TransferAsset(ctx, ctx.Signer, guildAddress!.Value,
+                var guild = repository.GetGuild(guildAddress.Value);
+                states = states.TransferAsset(ctx, ctx.Signer, guild.RewardPoolAddress,
                     states.GetGoldCurrency() * requiredNcg);
+                repository.UpdateWorld(states);
+                guild.CollectRewards(ctx.BlockIndex);
+                states = repository.World;
             }
 
             // Required block index = Total required block to reach target level - total required block to reach start level (already elapsed)

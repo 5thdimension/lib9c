@@ -613,7 +613,8 @@ namespace Lib9c.Tests.Action
                 var balance = nextState.GetBalance(_agentAddress, _currency);
                 var cost = prevBalance - balance;
                 Assert.True(cost > 0 * _currency);
-                Assert.Equal(cost, nextState.GetBalance(guildAddress, _currency));
+                var poolAddress = repository.GetGuild(guildAddress).RewardPoolAddress;
+                Assert.Equal(cost, nextState.GetBalance(poolAddress, _currency));
             }
             else
             {
