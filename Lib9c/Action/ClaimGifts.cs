@@ -20,6 +20,7 @@ namespace Nekoyume.Action
 
         public Address AvatarAddress;
         public int GiftId;
+        private const string GiftIdKey = "gi";
 
         public static Address ClaimedGiftIdsAddress(Address avatarAddress) =>
             avatarAddress.Derive("claimed_gift_ids");
@@ -36,11 +37,13 @@ namespace Nekoyume.Action
 
         protected override IImmutableDictionary<string, IValue> PlainValueInternal =>
             ImmutableDictionary<string, IValue>.Empty
-                .Add(AvatarAddressKey, AvatarAddress.Serialize());
+                .Add(AvatarAddressKey, AvatarAddress.Serialize())
+                .Add(GiftIdKey, GiftId.Serialize());
 
         protected override void LoadPlainValueInternal(IImmutableDictionary<string, IValue> plainValue)
         {
             AvatarAddress = plainValue[AvatarAddressKey].ToAddress();
+            GiftId = plainValue[GiftIdKey].ToInteger();
         }
 
         public override IWorld Execute(IActionContext context)
