@@ -22,9 +22,6 @@ namespace Nekoyume.Action
         public int GiftId;
         private const string GiftIdKey = "gi";
 
-        public static Address ClaimedGiftIdsAddress(Address avatarAddress) =>
-            avatarAddress.Derive("claimed_gift_ids");
-
         public ClaimGifts(Address avatarAddress, int giftId)
         {
             AvatarAddress = avatarAddress;
