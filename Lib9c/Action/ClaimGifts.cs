@@ -79,7 +79,7 @@ namespace Nekoyume.Action
                     GiftId);
             }
 
-            if (giftRow.Validate(context.BlockIndex))
+            if (!giftRow.Validate(context.BlockIndex))
             {
                 throw new ClaimableGiftsNotAvailableException(
                     $"[{addressesHex}] Claimable gift is not available at block index: {context.BlockIndex}"
