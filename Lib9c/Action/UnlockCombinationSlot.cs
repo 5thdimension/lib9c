@@ -45,7 +45,7 @@ namespace Nekoyume.Action
 
         public override IWorld Execute(IActionContext context)
         {
-            context.UseGas(1);
+            GasTracer.UseGas(1);
             var states = context.PreviousState;
             var sheets = states.GetSheets(
                 sheetTypes: new[]
@@ -89,9 +89,9 @@ namespace Nekoyume.Action
                 var addressesHex = GetSignerAndOtherAddressesHex(context, AvatarAddress);
                 throw new FailedLoadStateException($"{addressesHex}Aborted as the avatar state of the signer was failed to load.");
             }
-            
+
             var agentAddress = avatarState.agentAddress;
-            
+
             var useMaterial = false;
 
             MaterialItemSheet materialSheet = null;

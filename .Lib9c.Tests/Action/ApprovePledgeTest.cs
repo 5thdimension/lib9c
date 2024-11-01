@@ -9,6 +9,7 @@ namespace Lib9c.Tests.Action
     using Nekoyume;
     using Nekoyume.Action;
     using Nekoyume.Action.Guild;
+    using Nekoyume.Model.Guild;
     using Nekoyume.Model.State;
     using Nekoyume.Module;
     using Nekoyume.Module.Guild;
@@ -42,10 +43,11 @@ namespace Lib9c.Tests.Action
             });
 
             var contract = Assert.IsType<List>(nextState.GetLegacyState(contractAddress));
+            var guildRepository = new GuildRepository(nextState, new ActionContext());
             Assert.Equal(patron, contract[0].ToAddress());
             Assert.True(contract[1].ToBoolean());
             Assert.Equal(mead, contract[2].ToInteger());
-            Assert.Null(nextState.GetJoinedGuild(new AgentAddress(address)));
+            Assert.Null(guildRepository.GetJoinedGuild(new AgentAddress(address)));
         }
 
         [Theory]
@@ -61,8 +63,9 @@ namespace Lib9c.Tests.Action
                 .SetLegacyState(
                     contractAddress,
                     List.Empty.Add(patron.Serialize()).Add(false.Serialize()).Add(mead.Serialize())
-                )
-                .MakeGuild(guildAddress, GuildConfig.PlanetariumGuildOwner);
+                );
+            var guildRepository = new GuildRepository(states, new ActionContext());
+            guildRepository.MakeGuild(guildAddress, GuildConfig.PlanetariumGuildOwner);
 
             var action = new ApprovePledge
             {
@@ -78,7 +81,8 @@ namespace Lib9c.Tests.Action
             Assert.Equal(patron, contract[0].ToAddress());
             Assert.True(contract[1].ToBoolean());
             Assert.Equal(mead, contract[2].ToInteger());
-            var joinedGuildAddress = nextState.GetJoinedGuild(new AgentAddress(address));
+            guildRepository.UpdateWorld(nextState);
+            var joinedGuildAddress = guildRepository.GetJoinedGuild(new AgentAddress(address));
             Assert.NotNull(joinedGuildAddress);
             Assert.Equal(guildAddress, joinedGuildAddress);
         }

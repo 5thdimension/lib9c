@@ -4,6 +4,7 @@ using Libplanet.Action.State;
 using Libplanet.Crypto;
 using Nekoyume.Action.Guild;
 using Nekoyume.Extensions;
+using Nekoyume.Model.Guild;
 using Nekoyume.Model.State;
 using Nekoyume.Module;
 using Nekoyume.Module.Guild;
@@ -49,9 +50,12 @@ namespace Nekoyume.Action
                 throw new AlreadyContractedException($"{signer} already contracted.");
             }
 
-            if (PatronAddress == MeadConfig.PatronAddress && states.GetJoinedGuild(GuildConfig.PlanetariumGuildOwner) is { } guildAddress)
+            var guildRepository = new GuildRepository(states, context);
+
+            if (PatronAddress == MeadConfig.PatronAddress && guildRepository.GetJoinedGuild(GuildConfig.PlanetariumGuildOwner) is { } guildAddress)
             {
-                states = states.JoinGuild(guildAddress, context.GetAgentAddress());
+                guildRepository.JoinGuild(guildAddress, context.GetAgentAddress());
+                states = guildRepository.World;
             }
 
             return states.SetLegacyState(
